@@ -1,6 +1,8 @@
 <?php
 require_once 'config/init.php';
-?>
+
+if (Token::check(Input::get('token'))) {
+    ?>
 
 <html>
 	<?php require_once "views/layouts/layout_head.php";?>
@@ -16,3 +18,8 @@ require_once 'config/init.php';
 		<?php require_once "views/layouts/layout_js.php";?>
 	</body>
 </html>
+
+<?php } else {
+    Redirect::to("./index.php");
+}
+?>

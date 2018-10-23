@@ -41,9 +41,10 @@ if ($index == $countQuestions) {
     $post_url = "Results.php";
     $button   = '<input type="submit" value="Submit Quiz" class="btn btn-success btn-lg pull-center" id="nextButton"/>';
 } else {
-    $post_url = 'Questions.php?QuestionID=' . ($index + 1);
+    $post_url = 'Questions.php';
     $button   = '<button class="btn btn-success btn-lg pull-center" id="nextButton">Next</button>';
 }
+
 ?>
 
 <div class="col-sm-2"></div>
@@ -53,6 +54,9 @@ if ($index == $countQuestions) {
       <form method="POST" action="<?php echo $post_url ?>" onsubmit="return validateQuestion()" name="questionForm">
         <input type="hidden" name="index" value ="<?php echo $index ?>">
         <input type="hidden" name="QuizID" value ="<?php echo $QuizID ?>">
+        <input type="hidden" name="QuestionID" value ="<?php echo intval($index + 1) ?>">
+        <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+
 
         <div class="text-center">
           <h3 class="index-title"><?php echo $Question[$CurrentQuestionID]->QuestionName; ?></h3>
@@ -85,3 +89,4 @@ echo $button;
   </div>
 </div>
 <div class="col-sm-2"></div>
+

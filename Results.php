@@ -1,31 +1,32 @@
 <?php
 require_once 'config/init.php';
 
-$User          = Session::get('user');
-$Index         = Input::get('index');
-$QuizID        = Input::get('QuizID');
-$TransactionID = Session::get('TransactionID');
-$QuestionIDs   = Questions::getIDs($QuizID);
+if (Token::check(Input::get('token'))) {
+    $User          = Session::get('user');
+    $Index         = Input::get('index');
+    $QuizID        = Input::get('QuizID');
+    $TransactionID = Session::get('TransactionID');
+    $QuestionIDs   = Questions::getIDs($QuizID);
 
-//store last question's answer to the transactiondetails table
-Transaction::createDetail(
-    $TransactionID,
-    $QuizID,
-    $User['UserID'],
-    $QuestionIDs[($Index - 1)],
-    Input::get('switch_4')
-);
+    //store last question's answer to the transactiondetails table
+    Transaction::createDetail(
+        $TransactionID,
+        $QuizID,
+        $User['UserID'],
+        $QuestionIDs[($Index - 1)],
+        Input::get('switch_4')
+    );
 
-//Get all answers from transactiondetails table as array( QuestionID => AnswerID)
-$Answers = Transaction::getAnswers($TransactionID);
-//Get number of correct answers by using IsTrue column on options table
-$NumberOfCorrectAnswers = Quizzes::getResults($Answers);
-//calculate score as percent
-$Score = Quizzes::getScore($QuizID, $NumberOfCorrectAnswers);
-//Update transaction score in the transaction table
-Transaction::updateScore($TransactionID, $Score);
+    //Get all answers from transactiondetails table as array( QuestionID => AnswerID)
+    $Answers = Transaction::getAnswers($TransactionID);
+    //Get number of correct answers by using IsTrue column on options table
+    $NumberOfCorrectAnswers = Quizzes::getResults($Answers);
+    //calculate score as percent
+    $Score = Quizzes::getScore($QuizID, $NumberOfCorrectAnswers);
+    //Update transaction score in the transaction table
+    Transaction::updateScore($TransactionID, $Score);
 
-?>
+    ?>
 <html>
 
 <?php include "views/layouts/layout_head.php";?>
@@ -56,3 +57,8 @@ Transaction::updateScore($TransactionID, $Score);
 <?php include "views/layouts/layout_js.php";?>
 </body>
 </html>
+
+<?php } else {
+    Redirect::to('404.php');
+}
+?>
